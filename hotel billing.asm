@@ -35,7 +35,6 @@ options  BYTE "                        ----------------------  ", 0ah, 0dh
          BYTE "                        ---------------------- ", 0ah, 0dh, 0ah, 0dh
          BYTE " Enter 1 : To see our Menu and Prices.", 0ah, 0dh
 		 BYTE " Enter 3 : To Place an Order.", 0ah, 0dh
-		 BYTE " Enter 4 : To Reset the Bill [Cancel the order].", 0ah, 0dh
 		 BYTE " Enter 5 : To Exit.", 0ah, 0dh , 0
 
 		                                                          ; Price Menu...
@@ -85,16 +84,6 @@ pMenu    BYTE "                     ------------------------- ", 0ah, 0dh
 		 BYTE "		Coffee          : 89 per Cup. ", 0ah, 0dh
 		 BYTE "		Tea             : 49 per Cup. ", 0ah, 0dh, 0
 
-deals    BYTE "                        ---------------------- ", 0ah, 0dh
-         BYTE "                        -- Deals and Offers -- ", 0ah, 0dh
-         BYTE "                        ---------------------- ", 0ah, 0dh
-		 BYTE " * You will Get 5% Discount on any order above RS 1,999. * ", 0ah, 0dh, 0ah, 0dh
-		 BYTE " For any Deal enter the related number...", 0ah, 0dh
-		 BYTE " Deal 1 : Buy any 3 or more Oriental Dishes and get 1 Dessert free. ", 0ah, 0dh
-		 BYTE " Deal 2 : Buy any 2 or more Chinese Dishes and get 1 Drink free. ", 0ah, 0dh
-		 BYTE " Deal 3 : Buy any 2 or more Fast Foods and get 1 Regular Drink free. ", 0ah, 0dh
-		 BYTE " Deal 4 : Buy any 2 or more '1.5' Liters Drink and get 1 Regular Drink free. ", 0ah, 0dh
-		 BYTE "      5 : Exit Deal Menu. ", 0ah, 0dh, 0
 		 
 regDrink BYTE " Enter 1 : Coca Cola       : 49 Regular. ", 0ah, 0dh
 		 BYTE " Enter 2 : Sprite          : 49 Regular. ", 0ah, 0dh
@@ -554,8 +543,7 @@ customer PROC
 			 je  pm
 			 cmp eax, 3
 			 je  cm
-			 cmp eax, 4
-			 je  rb
+
 			 cmp eax, 5
 			 je  _exit
 
@@ -578,9 +566,7 @@ customer PROC
 				call choiceMenu
 				jmp op
 
-			 rb:                                                  ; Reset Bill Tag...
-				call resetBill
-				jmp op
+
 
     _exit:                                                        ; Exit Tag
 		  call printBill
@@ -1238,28 +1224,6 @@ DrinksMenu PROC
 			RET
 DrinksMenu ENDP
 
-;-------------------------------------------------------------------
-;| Print a message for customers...                                 |
-;| Uses:   pMenu string to print...                                 |
-;| update: Reset the bill to 0...                                   |
-;-------------------------------------------------------------------
-
-resetBill PROC
-           PUSHAD
-		   PUSHFD
-
-		   call crlf
-
-		   mov edx, OFFSET reMsg
-	       call writeString 
-
-		   mov bill, 0                                            ; Making bill 0...
-
-		   POPFD
-		   POPAD
-
-	       RET
-resetBill ENDP
 
 ;-------------------------------------------------------------------
 ;|          |
