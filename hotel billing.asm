@@ -34,7 +34,6 @@ options  BYTE "                        ----------------------  ", 0ah, 0dh
          BYTE "                        -----  Customer  ----- ", 0ah, 0dh
          BYTE "                        ---------------------- ", 0ah, 0dh, 0ah, 0dh
          BYTE " Enter 1 : To see our Menu and Prices.", 0ah, 0dh
-         BYTE " Enter 2 : To see our Deals and Offers.", 0ah, 0dh
 		 BYTE " Enter 3 : To Place an Order.", 0ah, 0dh
 		 BYTE " Enter 4 : To Reset the Bill [Cancel the order].", 0ah, 0dh
 		 BYTE " Enter 5 : To Exit.", 0ah, 0dh , 0
@@ -553,8 +552,6 @@ customer PROC
 
 			 cmp eax, 1
 			 je  pm
-			 cmp eax, 2
-			 je  do
 			 cmp eax, 3
 			 je  cm
 			 cmp eax, 4
@@ -576,10 +573,6 @@ customer PROC
 				call crlf
 
 				jmp  op
-
-			 do:                                                  ; Deals and Offers Tag...
-				call dealsOffers
-				jmp op
 
 			 cm:                                                  ; Choice Menu Tag...
 				call choiceMenu
@@ -607,72 +600,6 @@ customer ENDP
 ;| update: bill according to selected Deals and Offers..            |
 ;-------------------------------------------------------------------
 
-dealsOffers PROC
-             PUSHAD
-		     PUSHFD
-		
-			 deal:
-				 call crlf
-
-				 mov edx, OFFSET deals
-				 call writeString 
-				 call crlf 
-
-				 call readInt
-
-				 cmp eax,1	                                      ; Jump to deal One d1 tag
-				 je d1
-
-				 cmp eax,2		                                  ; Jump to deal Two d2 tag
-				 je d2
-
-				 cmp eax,3
-				 je d3
-
-				 cmp eax,4
-				 je d4
-
-				 cmp eax, 5
-		         je  _exit
-
-				 call error
-				 jmp deal
-
-			 d1: 
-				 mov dealRep,3								       ; Deal oriental function to add exact 3 dishes
-			     invoke dealOrientalMenu, dealRep	
-				
-				 jmp _exit
-			 
-			  d2:
-				 mov dealRep,2									  ; Deal Chinese function to add exact 2 dishes
-			     invoke dealChineseMenu, dealRep	
-				 
-				 jmp _exit
-				 	 
-			 d3:
-			     mov dealRep,2									  ; Deal Fast Food function to add exact 2 dishes
-			     invoke dealFastFoodMenu, dealRep	
-				 
-				 jmp _exit
-	
-
-			 d4:
-				mov dealRep, 2
- 			    invoke dealDrinks1_5, dealRep
-
-				jmp _exit
-			 
-			 _exit:
-
-			 mov edx, offset continueOrder
-			 call writeString
-			 			 
-		     POPFD
-		     POPAD
-			 RET
-
-dealsOffers ENDP
 
 ;-------------------------------------------------------------------
 ;| Print Menu with Prices for customers to order...                 |
