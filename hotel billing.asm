@@ -26,8 +26,7 @@ mockSaleBill BYTE ?
 welcome  BYTE "                       "
          BYTE " *** Welcome To Restaurant Transylvania *** ", 0ah, 0dh, 0 ; Welcome note...
 
-id       BYTE " Enter 1 : For Admin ", 0ah, 0dh
-         BYTE " Enter 2 : For Customers ", 0ah, 0dh
+id       BYTE " Enter 2 : For Customers ", 0ah, 0dh
 	     BYTE " Enter 3 : To Exit ", 0ah, 0dh, 0
 
 
