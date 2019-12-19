@@ -2,22 +2,9 @@ INCLUDE Irvine32.inc
 
 .DATA
 
-INPUT_SIZE    = 17                                                ; Max User can give as Input...
-SALE_SIZE     = 20                                                ; Max Sale Digits to be written to file...
 oPrice   DWORD 169, 149, 99, 89, 69, 69, 10, 5                    ; To store the prices of Oriental...
-cPrice   DWORD 169, 149, 99, 79                                   ; To store the prices of Chinese...
-fPrice   DWORD 149, 99, 79, 49                                    ; To store the prices of Fast Food...
-dePrice  DWORD 799, 699, 99, 69                                   ; To store the prices of Dessert...
-drPrice  DWORD 99, 99, 49 ,49, 69, 64, 89, 49                     ; To store the prices of Drinks...
 bill     DWORD ?                                                  ; To store the bill...
 bool     DWORD ?                                                  ; To store the result of Check... 
-byteRead DWORD ?                                                  ; To store read Bytes from File...
-fHandle  DWORD ?                                                  ; To store File Handle...
-mockBill DWORD ?                                                  ; To store copy of Bill...
-dealRep  DWORD ?                                                  ; To store Deal Repetition...
-bytWrite DWORD ?
-userPass BYTE  INPUT_SIZE DUP(?)                                  ; To store the Input Password...
-mockSaleBill BYTE ?
 
 welcome  BYTE "                       "
          BYTE " *** Welcome To Restaurant Transylvania *** ", 0ah, 0dh, 0 ; Welcome note...
@@ -58,20 +45,9 @@ dishes   BYTE " Enter the Quantity:  ", 0
 caption  BYTE " Error ", 0
 errMsg   BYTE " Please Enter Valid Numbber... ", 0
 billMsg  BYTE "    |Total Bill Is:   Rs ", 0
-exitMsg  BYTE "    ~~~~~~~~~~~~~~~~~~~~~~~~~ ", 0ah, 0dh
-         BYTE "   |Glad to have you Here... |", 0ah, 0dh
-		 BYTE "    ~~~~~~~~~~~~~~~~~~~~~~~~~ ", 0ah, 0dh, 0
-
-newLine BYTE 0ah, 0dh
+exitMsg  BYTE "   Glad to have you Here... ", 0ah, 0dh
 
 .CODE
-inputPass        PROTO, passString :PTR BYTE					  ; To print Oriental Menu on deals
-dealOrientalMenu PROTO, noOfDishes :DWORD						  ; To print Oriental Menu on deals
-dealChineseMenu  PROTO, noOfDishes :DWORD						  ; To print Chinese Menu on deals
-dealFastFoodMenu PROTO, noOfDishes :DWORD						  ; To print Fast Food Menu on deals
-setEcx2          PROTO, dealQuan1  :DWORD					      ; To set the value of ecx
-setEcx3          PROTO, dealQuan2  :DWORD						  ; To set the value of ecx
-dealDrinks1_5    PROTO , noOfDrinks:DWORD						  ; To 1.5 liters Drink Menu on deals
 
 main PROC
      mov eax, cyan
@@ -115,13 +91,6 @@ main PROC
 
 	       exit
 main ENDP
-
-;-------------------------------------------------------------------
-;| Read sales from Sales File...                                    |
-;| Uses: saleFile string to store sales...                          |
-;| booL = 1 (operation succeeded) && bool = 0 (operation failed)    |
-;-------------------------------------------------------------------
-
 
 ;-------------------------------------------------------------------
 ;| For customers only...                                            |
@@ -181,14 +150,6 @@ customer PROC
 
 		  RET
 customer ENDP
-
-;-------------------------------------------------------------------
-;| Print Deals and Offers with Prices for customers...              |
-;| Uses:   deals string to print...                                 |
-;| update: bill according to selected Deals and Offers..            |
-;-------------------------------------------------------------------
-
-
 
 ;-------------------------------------------------------------------
 ;| Print Oriental Menu with Prices for customers to order...        |
@@ -345,10 +306,6 @@ OrientalMenu ENDP
 
 
 ;-------------------------------------------------------------------
-;|          |
-;| Uses: Print the bill for Customers...                            |
-;-------------------------------------------------------------------
-;-------------------------------------------------------------------
 ;| Uses: Print the bill for Customers...                            |
 ;-------------------------------------------------------------------
 
@@ -402,49 +359,5 @@ error PROC
 
 	   RET
 error ENDP
-
-;-------------------------------------------------------------------
-;| Print Deal Oriental Menu with Prices for customers to order...   |
-;| Updates: Bill ...                                                |
-;-------------------------------------------------------------------
-;-------------------------------------------------------------------
-;| Checking number of dishes for deals 2-4                          |
-;| Updates: It exit the Loop...                                     |
-;-------------------------------------------------------------------
-
-setEcx2 PROC uses eax, dealQuan1:DWORD
-	    
-		mov eax, dealQuan1
-		cmp eax, 2
-		jge setECX
-				   
-		jmp ignore										  ; Check the quantity of dishes to decide the value of ecx register
-				   
-		setECX:
-		mov ecx,1
-
-		ignore:
-		RET
-setEcx2 ENDP
-
-;-------------------------------------------------------------------
-;| Checking number of dishes for deal 1                             |
-;| Updates: Updates: It exit the Loop...                            |
-;-------------------------------------------------------------------
-
-setEcx3 PROC uses eax, dealQuan2:DWORD
-	    
-		mov eax, dealQuan2
-		cmp eax, 3
-		jge setECX
-				   
-		jmp ignore										  ; Check the quantity of dishes to decide the value of ecx register
-				   
-		setECX:
-		mov ecx,1
-
-		ignore:
-		RET
-setEcx3 ENDP
 
 END main
