@@ -55,7 +55,8 @@ oriental BYTE " -------------- ", 0ah, 0dh
 		 BYTE " Enter 9 : To Exit. ", 0ah, 0dh, 0
 
 
-saleFileName BYTE "Sales.txt", 0
+saleFileName BYTE "Sales.txt", 0		;;need for other
+
 passWord BYTE " Enter Current Password less than 16 Characters : ", 0
 newPass  BYTE " Enter New Password less than 16 Characters : ", 0
 wrongPas BYTE "  ------------------------------------------ ", 0ah, 0dh
@@ -179,30 +180,6 @@ readSalesFile PROC
 		       RET
 readSalesFile ENDP
 
-;-------------------------------------------------------------------
-;| Read password from User...                                       |
-;| Uses: passFile string to Password...                             |
-;-------------------------------------------------------------------
-
-inputPass PROC passString :PTR BYTE	
-		   PUSHAD
-		   PUSHFD
-
-		   mov edx, passString 
-	       call writeString
-
-	       mov edx, OFFSET userPass                               ; Point to the Destination...
-           mov ecx, INPUT_SIZE                                    ; Specify max characters...
-	       call readString                                        ; Take input from user...
-
-           mov byteRead, eax                                      ; Bytes user write...
-
-	 _exit:
-		   POPFD
-	       POPAD
-
-		   RET
-inputPass ENDP
 
 ;-------------------------------------------------------------------
 ;| Read Sales to Sales File...                                      |
@@ -273,48 +250,6 @@ writeSales PROC
 	RET
 	
 writeSales ENDP
-
-;-------------------------------------------------------------------
-;| Check the password...                                            |
-;| Uses: bool variable to represent result..                        |
-;| bool = 1 means True && bool = 0 means False...                   |
-;-------------------------------------------------------------------
-
-check PROC
-       PUSHAD
-	   PUSHFD
-
-	   mov eax, byteread
-	   cmp eax, PASSWORD_SIZE
-	   jg notEqual
-
-	                            ; lea: load effective address is like combination of move and offset...
-	   lea esi, passfile                                          ; ds:si points to file password string...
-       lea edi, userpass                                          ; ds:di points to input password string...
-
-       lab:
-            mov bl, [edi]                                         ; Moving to bl... 
-			inc di                                                ; inc to get next character...
-            lodsb                                                 ; load al with next char from passFile...
-                                                                  ; note: lodsb inc si automatically...
-            cmp al, bl                                            ; compare characters...
-            jne notEqual                                          ; jump out of loop if not equal...
- 
-            cmp al, 0                                             ; they are the same, but end of string?
-            jne lab                                               ; no - so go round loop again
-
-            mov bool, 1
-	        jmp _exit                                             ; to save from executing notEqual tag...
-
-       notEqual:
-	            mov bool, 0
-
- _exit:
-	   POPFD
-	   POPAD
-
-	   RET
-check ENDP
 
 ;-------------------------------------------------------------------
 ;| For customers only...                                            |
