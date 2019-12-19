@@ -107,9 +107,7 @@ dishes   BYTE " Enter the Quantity:  ", 0
 dealItem BYTE " Please Select your FREE item... ", 0ah, 0dh, 0
 caption  BYTE " Error ", 0
 errMsg   BYTE " Please follow instructions correctly... ", 0
-billMsg  BYTE "    |Gross Bill:   Rs ", 0
-totalDis BYTE "    |5% Discount on Bill more than Rs 1999:  RS ", 0
-paybill  BYTE "    |Bill After Discount:  Rs ", 0
+billMsg  BYTE "    |Total Bill Is:   Rs ", 0
 exitMsg  BYTE "    ~~~~~~~~~~~~~~~~~~~~~~~~~ ", 0ah, 0dh
          BYTE "   |Glad to have you Here... |", 0ah, 0dh
 		 BYTE "    ~~~~~~~~~~~~~~~~~~~~~~~~~ ", 0ah, 0dh, 0
@@ -506,7 +504,7 @@ customer PROC
 
     _exit:                                                        ; Exit Tag
 		  call printBill
-		  call WriteSales
+		  call WriteSales						;;need modify
 		  mov bill, 0
 		  call crlf
 
@@ -682,35 +680,6 @@ OrientalMenu ENDP
 ;|          |
 ;| Uses: Print the bill for Customers...                            |
 ;-------------------------------------------------------------------
-
-discount PROC
-		  PUSHAD
-		  PUSHFD
-
-		  mov eax, bill
-		  cmp eax, 1999
-		  jg disc
-		  jmp _exit
-
-		  disc:
-			   mov ebx, 20
-			   mul ebx
-			   mov edx, 0
-			   mov ecx, 100
-			   div ecx
-			   mov mockBill, eax
-
-			   mov eax, bill
-			   sub eax, mockBill
-			   mov bill, eax
-
-	_exit:
-		  POPFD
-		  POPAD
-
-	      RET
-discount ENDP
-
 ;-------------------------------------------------------------------
 ;| Uses: Print the bill for Customers...                            |
 ;-------------------------------------------------------------------
@@ -727,23 +696,9 @@ printBill PROC
 		   mov eax, bill
 		   call writeInt                                         ; Print the original bill...
 
-		   call discount
+		   
 
 		   call crlf
-
-		   mov edx, offset totalDis
-		   call writeString
-
-		   mov eax, mockbill
-		   call writeInt                                           ; Print Total Discount...
-
-		   call crlf
-
-		   mov edx, offset paybill
-		   call writeString
-
-		   mov eax, bill
-		   call writeInt										   ; Printing Payable Bill...
 
 		   call crlf
 		   call crlf
