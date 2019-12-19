@@ -2,8 +2,6 @@ INCLUDE Irvine32.inc
 
 .DATA
 
-BUFFER_SIZE   = 5000
-PASSWORD_SIZE = 15                                                ; Max Pass User can Set....
 INPUT_SIZE    = 17                                                ; Max User can give as Input...
 SALE_SIZE     = 20                                                ; Max Sale Digits to be written to file...
 oPrice   DWORD 169, 149, 99, 89, 69, 69, 10, 5                    ; To store the prices of Oriental...
@@ -18,9 +16,7 @@ fHandle  DWORD ?                                                  ; To store Fil
 mockBill DWORD ?                                                  ; To store copy of Bill...
 dealRep  DWORD ?                                                  ; To store Deal Repetition...
 bytWrite DWORD ?
-passFile BYTE  PASSWORD_SIZE DUP(?)                               ; To store the Password from File...
 userPass BYTE  INPUT_SIZE DUP(?)                                  ; To store the Input Password...
-saleFile BYTE  BUFFER_SIZE DUP(?)
 mockSaleBill BYTE ?
 
 welcome  BYTE "                       "
@@ -57,26 +53,15 @@ oriental BYTE " -------------- ", 0ah, 0dh
 
 saleFileName BYTE "Sales.txt", 0		;;need for other
 
-passWord BYTE " Enter Current Password less than 16 Characters : ", 0
-newPass  BYTE " Enter New Password less than 16 Characters : ", 0
-wrongPas BYTE "  ------------------------------------------ ", 0ah, 0dh
-         BYTE " |Password is incorrect or Input is Invalid.|", 0ah, 0dh
-		 BYTE "  ------------------------------------------ ", 0ah, 0dh, 0
-confirm  BYTE " New Password is Set. ", 0ah, 0dh, 0
-reMsg    BYTE " Your Order has been Canceled... ", 0ah, 0dh, 0    ; Reset Bill Message...
 dishes   BYTE " Enter the Quantity:  ", 0
-dealItem BYTE " Please Select your FREE item... ", 0ah, 0dh, 0
+
 caption  BYTE " Error ", 0
-errMsg   BYTE " Please follow instructions correctly... ", 0
+errMsg   BYTE " Please Enter Valid Numbber... ", 0
 billMsg  BYTE "    |Total Bill Is:   Rs ", 0
 exitMsg  BYTE "    ~~~~~~~~~~~~~~~~~~~~~~~~~ ", 0ah, 0dh
          BYTE "   |Glad to have you Here... |", 0ah, 0dh
 		 BYTE "    ~~~~~~~~~~~~~~~~~~~~~~~~~ ", 0ah, 0dh, 0
 
-dealAdded BYTE " Your Free item has been Added in the order Successful... ", 0ah, 0dh, 0
-continueOrder BYTE " Would you like to order Something More... ", 0ah, 0dh, 0
-dealCancel BYTE " You have canceled the deal... ", 0ah, 0dh, 0
-nameSale BYTE " Sale : ", 0
 newLine BYTE 0ah, 0dh
 
 .CODE
@@ -137,119 +122,6 @@ main ENDP
 ;| booL = 1 (operation succeeded) && bool = 0 (operation failed)    |
 ;-------------------------------------------------------------------
 
-readSalesFile PROC
-		       PUSHAD
-		       PUSHFD
-
-		       INVOKE CreateFile,
-                      ADDR saleFileName,
-                      GENERIC_READ,
-                      DO_NOT_SHARE,
-                      NULL,
-                      OPEN_EXISTING,
-                      FILE_ATTRIBUTE_NORMAL,
-                      0
-
-		       cmp eax, INVALID_HANDLE_VALUE                      ; Checking if handle is valid...
-		       je err
-
-		       mov fHandle, eax                                   ; Just for safety storing Handle...      
-
-	           mov edx, OFFSET saleFile                           ; Storage string...
-	           mov ecx, BUFFER_SIZE                               ; Max buffer....
-	           call ReadFromFile
-
-	           jc err											  ; If file is not Read Carry will be set...
-
-		       INVOKE CloseHandle, fHandle                        ; Calling CloseHandle function...
-              
-		       cmp eax, 0                                         ; Non-Zero eax means Close File...
-               je err
-
-		       mov bool, 1                                        ; If everything is OK.
-		       jmp _exit
- 
-		       err:                                               ; File Opening Error block... 
-	               call WriteWindowsMsg
-			       mov bool, 0                                    ; If does not open
-
-	     _exit:
-		       POPFD
-	           POPAD
-
-		       RET
-readSalesFile ENDP
-
-
-;-------------------------------------------------------------------
-;| Read Sales to Sales File...                                      |
-;| Uses: passFile string to store password...                       |
-;| booL = 1 (operation succeeded) && bool = 0 (operation failed)    |
-;-------------------------------------------------------------------
-
-writeSales PROC
-	PUSHAD
-	PUSHFD
-			
-		INVOKE CreateFile,
-			ADDR saleFileName,
-			GENERIC_WRITE,
-			DO_NOT_SHARE,
-			NULL,
-			OPEN_EXISTING,
-			FILE_ATTRIBUTE_NORMAL,
-			0
-		
-		 cmp eax, INVALID_HANDLE_VALUE                      ; Checking if handle is valid...
-		 je err
-
-		mov fHandle,eax
-		INVOKE SetFilePointer,
-			fHandle,
-			0,
-			0,
-			FILE_END
-		
-		cmp eax, INVALID_HANDLE_VALUE                   ; Checking if handle is valid...
-		je err
-
-		INVOKE WriteFile,
-			fHandle,
-			ADDR nameSale,
-			SIZEOF nameSale,
-			ADDR bytWrite,
-			0
-			
-		
-		INVOKE WriteFile,
-			fHandle,
-			bill,
-			SIZEOF DWORD,
-			ADDR bytWrite,
-			0
-
-		INVOKE WriteFile,
-			fHandle,
-			ADDR newLine,
-			SIZEOF newLine,
-			ADDR bytWrite,
-			0
-
-
-		INVOKE CloseHandle, fHandle                               ; if does not open
-		jmp _exit
-	 
-	 err:                                               ; File Opening Error block... 
-	        call WriteWindowsMsg
-			mov bool, 0                                    ; if does not open
-
-	     _exit:
-				POPFD
-				POPAD
-
-	RET
-	
-writeSales ENDP
 
 ;-------------------------------------------------------------------
 ;| For customers only...                                            |
@@ -301,7 +173,6 @@ customer PROC
 
     _exit:                                                        ; Exit Tag
 		  call printBill
-		  call WriteSales						;;need modify
 		  mov bill, 0
 		  call crlf
 
