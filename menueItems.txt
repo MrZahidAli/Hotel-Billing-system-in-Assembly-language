@@ -1,0 +1,11 @@
+ ------------------- Menue ----------------- 
+ 
+ Press 1 to order 'Rice'             : 70 per plate 
+ Press 2 to order 'Biryani'          : 120 per plate 
+ Press 3 to order 'Chicken Qurma'    : 90 per plate 
+ Press 4 to order 'Chicken Karahi'   : 100 per plate 
+ Press 5 to order 'Soap'             : 60 per bowl 
+ Press 6 to order 'Vegetable'        : 50 per plate 
+ Press 7 to order 'Naan'             : 10 per Piece 
+ Press 8 to order 'Cool Drink'       : 30 Regular  
+ Press 9 to Exit.

@@ -1,0 +1,11 @@
+ ------------------- Menue ----------------- 
+ 
+  Rice             :70 per plate 
+  Biryani          : 120 per plate 
+  Chicken Qurma    : 90 per plate. 
+  Chicken Karahi   : 100 per plate 
+  Soap             : 60 per Bowl 
+  Vegetable	   : 50 per plate 
+  Naan             : 10 per Piece 
+  Cool Drink       : 30 Regular 
+ 
